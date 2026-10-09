@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUXAPRIBA — Équipement de Luxe & Maison</title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co/7NNR9LWk/Chat-GPT-Image-21-sept-2026-11-57-55.png">
+    <style>
+        :root {
+            --primary: #121212;
+            --accent: #d4af37;
+            --accent-hover: #aa8c2c;
+            --bg: #f9f9f9;
+            --card-bg: #ffffff;
+            --text: #222222;
+            --muted: #666666;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --whatsapp: #25D366;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            line-height: 1.6; 
+            padding-top: 40px; 
+        }
+
+        /* Bannière d'Annonce Fixe Rouge */
+        .promo-banner {
+            background-color: #d9534f;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 16px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            display: block;
+        }
+
+        /* Navbar sticky */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 40px;
+            z-index: 999;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            display: block;
+            cursor: pointer;
+        }
+
+        .nav-buttons { display: flex; gap: 1rem; align-items: center; }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-accent { background: var(--accent); color: var(--primary); }
+        .btn-accent:hover { background: var(--accent-hover); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        
+        .btn-whatsapp {
+            background-color: var(--whatsapp);
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            padding: 12px 20px;
+            border-radius: 6px;
+            width: 100%;
+            margin-top: 1rem;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .btn-whatsapp:hover {
+            background-color: #1eb954;
+            transform: translateY(-2px);
+        }
+
+        /* Layout */
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        .controls { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .search-bar, .filter-select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; }
+
+        /* Product Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
+        .card { background: var(--card-bg); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-4px); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-body { padding: 1rem; }
+        .badge { position: absolute; top: 10px; right: 10px; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        .badge-stock { background: var(--success); color: white; }
+        .badge-sold { background: var(--danger); color: white; }
+        .price { font-size: 1.25rem; font-weight: bold; color: var(--primary); margin: 0.5rem 0; }
+
+        /* Admin Panel */
+        .admin-panel { background: white; padding: 2rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid var(--accent); display: none; }
+        .admin-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .admin-form input, .admin-form select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+
+        /* Modale Panier */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+            border-top: 1px solid #ddd;
+        }
+        .admin-trigger { cursor: pointer; text-decoration: none; color: inherit; }
+    </style>
+</head>
+<body>
+
+    <!-- Promo Banner -->
+    <div class="promo-banner" id="promoBanner">
+        ✨ Offre spéciale LUXAPRIBA : Livraison offerte dès 150€ d'achat sur le rayon Salle de bain !
+    </div>
+
+    <!-- Header avec Logo ImgBB -->
+    <header id="mainHeader">
+        <a href="#">
+            <img src="https://i.ibb.co/7NNR9LWk/Chat-GPT-Image-21-sept-2026-11-57-55.png" alt="LUXAPRIBA Logo" class="logo-img">
+        </a>
+        <div class="nav-buttons">
+            <button class="btn btn-accent" onclick="openCartModal()">Panier (<span id="cartCount">0</span>)</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Admin Dashboard -->
+        <section class="admin-panel" id="adminPanel">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Panneau d'Administration (Accès Réussi)</h2>
+                <button class="btn" style="background: var(--danger); color: white;" onclick="closeAdmin()">Fermer / Déconnexion</button>
+            </div>
+            <p style="margin-bottom: 1rem; color: var(--muted);">Ajoutez de nouveaux articles, modifiez le stock ou l'annonce globale du site.</p>
+            
+            <h3>1. Gérer la Bannière Promotionnelle</h3>
+            <div style="display: flex; gap: 0.5rem; margin: 1rem 0; flex-wrap: wrap;">
+                <input type="text" id="newBannerInput" placeholder="Nouveau texte de promotion..." style="flex: 1; min-width: 200px; padding: 8px;">
+                <button class="btn btn-accent" onclick="updateBanner()">Mettre à jour / Afficher</button>
+                <button class="btn" style="background: var(--danger); color: white;" onclick="removeBanner()">Masquer / Supprimer l'annonce</button>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">2. Ajouter un nouvel Article</h3>
+            <form class="admin-form" onsubmit="addProduct(event)">
+                <input type="text" id="pTitle" placeholder="Titre de l'article" required>
+                <select id="pCategory" required>
+                    <option value="">Sélectionner une catégorie</option>
+                    <option value="Gazon Artificiel">Gazon Artificiel</option>
+                    <option value="Colonne de Douche">Colonne de Douche</option>
+                    <option value="Mitigeur">Mitigeur</option>
+                    <option value="Meuble Salle de Bain">Meuble Salle de Bain</option>
+                    <option value="Lavabo & Vasque">Lavabo & Vasque</option>
+                    <option value="Autre Luxe">Autre article</option>
+                </select>
+                <input type="number" id="pPrice" placeholder="Prix (€)" step="0.01" required>
+                <input type="url" id="pImg" placeholder="URL de la photo" required>
+                <button type="submit" class="btn btn-accent" style="grid-column: 1 / -1;">Publier l'Article</button>
+            </form>
+        </section>
+
+        <!-- Filters & Search -->
+        <div class="controls">
+            <input type="text" class="search-bar" id="searchInput" placeholder="Rechercher un produit..." oninput="renderProducts()">
+            <select class="filter-select" id="categoryFilter" onchange="renderProducts()">
+                <option value="ALL">Toutes les catégories</option>
+                <option value="Gazon Artificiel">Gazon Artificiel</option>
+                <option value="Colonne de Douche">Colonnes de Douche</option>
+                <option value="Mitigeur">Mitigeurs</option>
+                <option value="Meuble Salle de Bain">Meubles Salle de Bain</option>
+                <option value="Lavabo & Vasque">Lavabos & Vasques</option>
+            </select>
+        </div>
+
+        <!-- Product Catalogue -->
+        <div class="grid" id="productGrid"></div>
+    </div>
+
+    <!-- Modale du Panier -->
+    <div class="modal-overlay" id="cartModal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2>Mon Panier</h2>
+                <button class="btn" style="background: transparent; font-size: 1.2rem; cursor: pointer;" onclick="closeCartModal()">✕</button>
+            </div>
+            
+            <div id="cartItemsList"></div>
+            
+            <div style="margin-top: 1.5rem; border-top: 2px solid #eee; padding-top: 1rem; font-size: 1.2rem; font-weight: bold; display: flex; justify-content: space-between;">
+                <span>Total :</span>
+                <span id="cartTotal">0.00 €</span>
+            </div>
+
+            <!-- Choix du mode de paiement obligatoire -->
+            <div style="margin-top: 1.5rem; background: #f0f0f0; padding: 1rem; border-radius: 6px;">
+                <label for="paymentMethod" style="font-weight: bold; display: block; margin-bottom: 0.5rem; color: var(--primary);">
+                    Mode de paiement obligatoire * :
+                </label>
+                <select id="paymentMethod" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95rem;">
+                    <option value="">-- Choisissez votre mode de paiement --</option>
+                    <option value="Carte Bancaire">Carte Bancaire</option>
+                    <option value="Espèces">Espèces</option>
+                </select>
+            </div>
+
+            <button class="btn btn-whatsapp" onclick="checkoutWhatsApp()">
+                Commander via WhatsApp 💬
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; LUXAPRIBA — Équipements de Luxe & Maison. Tous droits réservés. <span class="admin-trigger" onclick="requestAdminAccess()">•</span></p>
+    </footer>
+
+    <script>
+        const SECRET_CODE = "05102005";
+        let isAdminAuthenticated = false;
+
+        let products = [
+            { id: 1, title: "Gazon Artificiel Premium 40mm", category: "Gazon Artificiel", price: 18.90, img: "https://images.unsplash.com/photo-1558904541-efa843a96f01?w=500", inStock: true },
+            { id: 2, title: "Colonne de Douche Thermostatique Noir Mat", category: "Colonne de Douche", price: 219.00, img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500", inStock: true },
+            { id: 3, title: "Mitigeur Cascade Doré Brossé", category: "Mitigeur", price: 89.90, img: "https://images.unsplash.com/photo-1620626011761-996317b8d101?w=500", inStock: true },
+            { id: 4, title: "Vasque en Marbre Noir Oval", category: "Lavabo & Vasque", price: 145.00, img: "https://images.unsplash.com/photo-1564540586988-aa4e53c3d799?w=500", inStock: false }
+        ];
+
+        let cart = [];
+
+        function requestAdminAccess() {
+            const codeInput = prompt("Accès Administrateur — Veuillez saisir votre code secret :");
+            if (codeInput === SECRET_CODE) {
+                isAdminAuthenticated = true;
+                document.getElementById('adminPanel').style.display = 'block';
+                renderProducts();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (codeInput !== null) {
+                alert("Code secret incorrect.");
+            }
+        }
+
+        function closeAdmin() {
+            isAdminAuthenticated = false;
+            document.getElementById('adminPanel').style.display = 'none';
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const grid = document.getElementById('productGrid');
+
+            grid.innerHTML = '';
+
+            products.filter(p => {
+                const matchesCategory = category === 'ALL' || p.category === category;
+                const matchesSearch = p.title.toLowerCase().includes(search);
+                return matchesCategory && matchesSearch;
+            }).forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <span class="badge ${p.inStock ? 'badge-stock' : 'badge-sold'}">${p.inStock ? 'Disponible' : 'Épuisé'}</span>
+                    <img src="${p.img}" alt="${p.title}">
+                    <div class="card-body">
+                        <small style="color:var(--muted)">${p.category}</small>
+                        <h3 style="font-size:1.1rem; margin: 4px 0;">${p.title}</h3>
+                        <div class="price">${p.price.toFixed(2)} €</div>
+                        <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                            ${p.inStock ? `<button class="btn btn-accent" style="flex:1" onclick="addToCart(${p.id})">Ajouter</button>` : `<button class="btn" style="flex:1; background:#ccc;" disabled>Épuisé</button>`}
+                            ${isAdminAuthenticated ? `<button class="btn btn-outline" onclick="toggleStock(${p.id})">Stock</button>` : ''}
+                            ${isAdminAuthenticated ? `<button class="btn" style="background:var(--danger); color:white;" onclick="deleteProduct(${p.id})">X</button>` : ''}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        /* Gestion de la bannière d'annonce */
+        function updateBanner() {
+            const val = document.getElementById('newBannerInput').value;
+            const banner = document.getElementById('promoBanner');
+            const header = document.getElementById('mainHeader');
+            
+            if (val) {
+                banner.innerText = val;
+                banner.style.display = 'block';
+                document.body.style.paddingTop = '40px';
+                header.style.top = '40px';
+            }
+        }
+
+        function removeBanner() {
+            const banner = document.getElementById('promoBanner');
+            const header = document.getElementById('mainHeader');
+            
+            banner.style.display = 'none';
+            document.body.style.paddingTop = '0px';
+            header.style.top = '0px';
+        }
+
+        function addProduct(e) {
+            e.preventDefault();
+            const newProd = {
+                id: Date.now(),
+                title: document.getElementById('pTitle').value,
+                category: document.getElementById('pCategory').value,
+                price: parseFloat(document.getElementById('pPrice').value),
+                img: document.getElementById('pImg').value,
+                inStock: true
+            };
+            products.unshift(newProd);
+            renderProducts();
+            e.target.reset();
+        }
+
+        function toggleStock(id) {
+            const prod = products.find(p => p.id === id);
+            if (prod) prod.inStock = !prod.inStock;
+            renderProducts();
+        }
+
+        function deleteProduct(id) {
+            products = products.filter(p => p.id !== id);
+            renderProducts();
+        }
+
+        function addToCart(id) {
+            cart.push(id);
+            document.getElementById('cartCount').innerText = cart.length;
+        }
+
+        /* Gestion de la modale du panier */
+        function openCartModal() {
+            const list = document.getElementById('cartItemsList');
+            list.innerHTML = '';
+
+            if (cart.length === 0) {
+                list.innerHTML = '<p style="color:var(--muted); text-align:center;">Votre panier est vide.</p>';
+                document.getElementById('cartTotal').innerText = '0.00 €';
+            } else {
+                const counts = {};
+                cart.forEach(id => { counts[id] = (counts[id] || 0) + 1; });
+
+                let total = 0;
+
+                Object.keys(counts).forEach(id => {
+                    const prod = products.find(p => p.id == id);
+                    if (prod) {
+                        const subtotal = prod.price * counts[id];
+                        total += subtotal;
+                        list.innerHTML += `
+                            <div class="cart-item">
+                                <div>
+                                    <strong>${prod.title}</strong><br>
+                                    <small style="color:var(--muted);">${prod.price.toFixed(2)} € x ${counts[id]}</small>
+                                </div>
+                                <div>${subtotal.toFixed(2)} €</div>
+                            </div>
+                        `;
+                    }
+                });
+
+                document.getElementById('cartTotal').innerText = total.toFixed(2) + ' €';
+            }
+
+            document.getElementById('cartModal').style.display = 'flex';
+        }
+
+        function closeCartModal() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        /* Envoi vers WhatsApp avec mode de paiement obligatoire */
+        function checkoutWhatsApp() {
+            const phoneNumber = "262639652738";
+            
+            if (cart.length === 0) {
+                alert("Votre panier est vide ! Ajoutez des articles avant de commander.");
+                return;
+            }
+
+            const paymentSelect = document.getElementById('paymentMethod');
+            const selectedPayment = paymentSelect.value;
+
+            if (!selectedPayment) {
+                alert("Veuillez sélectionner un mode de paiement (Carte Bancaire ou Espèces) avant de commander.");
+                paymentSelect.focus();
+                return;
+            }
+
+            const counts = {};
+            cart.forEach(id => { counts[id] = (counts[id] || 0) + 1; });
+
+            let orderDetails = "";
+            let total = 0;
+
+            Object.keys(counts).forEach(id => {
+                const prod = products.find(p => p.id == id);
+                if (prod) {
+                    const subtotal = prod.price * counts[id];
+                    total += subtotal;
+                    orderDetails += `• ${prod.title} (x${counts[id]}) : ${subtotal.toFixed(2)} €\n`;
+                }
+            });
+
+            const message = `Bonjour LUXAPRIBA, je souhaite passer la commande suivante :\n\n${orderDetails}\n*Total : ${total.toFixed(2)} €*\n💳 *Mode de paiement : ${selectedPayment}*`;
+
+            window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        renderProducts();
+    </script>
+</body>
+</html>
