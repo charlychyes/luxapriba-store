@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUXAPRIBA — Équipement de Luxe & Maison</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/7NNR9LWk/Chat-GPT-Image-21-sept-2026-11-57-55.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #121212;
@@ -28,7 +31,6 @@
             padding-top: 40px; 
         }
 
-        /* Bannière d'Annonce Fixe Rouge */
         .promo-banner {
             background-color: #d9534f;
             color: #ffffff;
@@ -46,7 +48,6 @@
             display: block;
         }
 
-        /* Navbar sticky */
         header {
             background-color: var(--primary);
             color: white;
@@ -59,11 +60,28 @@
             z-index: 999;
         }
 
+        /* Branding élégant avec Logo + Nom du site */
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
         .logo-img {
-            height: 50px;
+            height: 48px;
             width: auto;
             display: block;
-            cursor: pointer;
+        }
+
+        .brand-name {
+            font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         .nav-buttons { display: flex; gap: 1rem; align-items: center; }
@@ -95,12 +113,10 @@
             transform: translateY(-2px);
         }
 
-        /* Layout */
         .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
         .controls { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
         .search-bar, .filter-select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; }
 
-        /* Product Grid */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
         .card { background: var(--card-bg); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; transition: transform 0.2s; }
         .card:hover { transform: translateY(-4px); }
@@ -111,12 +127,10 @@
         .badge-sold { background: var(--danger); color: white; }
         .price { font-size: 1.25rem; font-weight: bold; color: var(--primary); margin: 0.5rem 0; }
 
-        /* Admin Panel */
         .admin-panel { background: white; padding: 2rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid var(--accent); display: none; }
         .admin-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
         .admin-form input, .admin-form select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
 
-        /* Modale Panier */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -144,7 +158,6 @@
             border-bottom: 1px solid #eee;
         }
 
-        /* Footer */
         footer {
             text-align: center;
             padding: 2rem;
@@ -158,15 +171,14 @@
 </head>
 <body>
 
-    <!-- Promo Banner -->
     <div class="promo-banner" id="promoBanner">
         ✨ Offre spéciale LUXAPRIBA : Livraison offerte dès 150€ d'achat sur le rayon Salle de bain !
     </div>
 
-    <!-- Header avec Logo ImgBB -->
     <header id="mainHeader">
-        <a href="#">
+        <a href="#" class="brand-container">
             <img src="https://i.ibb.co/7NNR9LWk/Chat-GPT-Image-21-sept-2026-11-57-55.png" alt="LUXAPRIBA Logo" class="logo-img">
+            <span class="brand-name">LUXAPRIBA</span>
         </a>
         <div class="nav-buttons">
             <button class="btn btn-accent" onclick="openCartModal()">Panier (<span id="cartCount">0</span>)</button>
@@ -174,13 +186,12 @@
     </header>
 
     <div class="container">
-        <!-- Admin Dashboard -->
         <section class="admin-panel" id="adminPanel">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h2>Panneau d'Administration (Accès Réussi)</h2>
                 <button class="btn" style="background: var(--danger); color: white;" onclick="closeAdmin()">Fermer / Déconnexion</button>
             </div>
-            <p style="margin-bottom: 1rem; color: var(--muted);">Ajoutez de nouveaux articles, modifiez le stock ou l'annonce globale du site.</p>
+            <p style="margin-bottom: 1rem; color: var(--muted);">Ajoutez vos articles. Ils resteront sauvegardés en mémoire dans votre navigateur.</p>
             
             <h3>1. Gérer la Bannière Promotionnelle</h3>
             <div style="display: flex; gap: 0.5rem; margin: 1rem 0; flex-wrap: wrap;">
@@ -207,7 +218,6 @@
             </form>
         </section>
 
-        <!-- Filters & Search -->
         <div class="controls">
             <input type="text" class="search-bar" id="searchInput" placeholder="Rechercher un produit..." oninput="renderProducts()">
             <select class="filter-select" id="categoryFilter" onchange="renderProducts()">
@@ -220,11 +230,9 @@
             </select>
         </div>
 
-        <!-- Product Catalogue -->
         <div class="grid" id="productGrid"></div>
     </div>
 
-    <!-- Modale du Panier -->
     <div class="modal-overlay" id="cartModal">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -239,7 +247,6 @@
                 <span id="cartTotal">0.00 €</span>
             </div>
 
-            <!-- Choix du mode de paiement obligatoire -->
             <div style="margin-top: 1.5rem; background: #f0f0f0; padding: 1rem; border-radius: 6px;">
                 <label for="paymentMethod" style="font-weight: bold; display: block; margin-bottom: 0.5rem; color: var(--primary);">
                     Mode de paiement obligatoire * :
@@ -265,14 +272,16 @@
         const SECRET_CODE = "05102005";
         let isAdminAuthenticated = false;
 
-        let products = [
-            { id: 1, title: "Gazon Artificiel Premium 40mm", category: "Gazon Artificiel", price: 18.90, img: "https://images.unsplash.com/photo-1558904541-efa843a96f01?w=500", inStock: true },
-            { id: 2, title: "Colonne de Douche Thermostatique Noir Mat", category: "Colonne de Douche", price: 219.00, img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500", inStock: true },
-            { id: 3, title: "Mitigeur Cascade Doré Brossé", category: "Mitigeur", price: 89.90, img: "https://images.unsplash.com/photo-1620626011761-996317b8d101?w=500", inStock: true },
-            { id: 4, title: "Vasque en Marbre Noir Oval", category: "Lavabo & Vasque", price: 145.00, img: "https://images.unsplash.com/photo-1564540586988-aa4e53c3d799?w=500", inStock: false }
+        let savedProducts = localStorage.getItem('luxapriba_products');
+        let products = savedProducts ? JSON.parse(savedProducts) : [
+            { id: 1, title: "Gazon Artificiel Premium 40mm", category: "Gazon Artificiel", price: 18.90, img: "https://images.unsplash.com/photo-1558904541-efa843a96f01?w=500", inStock: true }
         ];
 
         let cart = [];
+
+        function saveProductsToStorage() {
+            localStorage.setItem('luxapriba_products', JSON.stringify(products));
+        }
 
         function requestAdminAccess() {
             const codeInput = prompt("Accès Administrateur — Veuillez saisir votre code secret :");
@@ -299,11 +308,18 @@
 
             grid.innerHTML = '';
 
-            products.filter(p => {
+            const filtered = products.filter(p => {
                 const matchesCategory = category === 'ALL' || p.category === category;
                 const matchesSearch = p.title.toLowerCase().includes(search);
                 return matchesCategory && matchesSearch;
-            }).forEach(p => {
+            });
+
+            if(filtered.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color: var(--muted);">Aucun article trouvé.</p>';
+                return;
+            }
+
+            filtered.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
@@ -324,7 +340,6 @@
             });
         }
 
-        /* Gestion de la bannière d'annonce */
         function updateBanner() {
             const val = document.getElementById('newBannerInput').value;
             const banner = document.getElementById('promoBanner');
@@ -358,18 +373,23 @@
                 inStock: true
             };
             products.unshift(newProd);
+            saveProductsToStorage();
             renderProducts();
             e.target.reset();
         }
 
         function toggleStock(id) {
             const prod = products.find(p => p.id === id);
-            if (prod) prod.inStock = !prod.inStock;
+            if (prod) {
+                prod.inStock = !prod.inStock;
+                saveProductsToStorage();
+            }
             renderProducts();
         }
 
         function deleteProduct(id) {
             products = products.filter(p => p.id !== id);
+            saveProductsToStorage();
             renderProducts();
         }
 
@@ -378,7 +398,6 @@
             document.getElementById('cartCount').innerText = cart.length;
         }
 
-        /* Gestion de la modale du panier */
         function openCartModal() {
             const list = document.getElementById('cartItemsList');
             list.innerHTML = '';
@@ -419,7 +438,6 @@
             document.getElementById('cartModal').style.display = 'none';
         }
 
-        /* Envoi vers WhatsApp avec mode de paiement obligatoire */
         function checkoutWhatsApp() {
             const phoneNumber = "262639652738";
             
