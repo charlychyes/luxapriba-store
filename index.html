@@ -9,9 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
     
-   <!-- SDKs Firebase nécessaires pour la version compat de votre code -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
     <style>
         :root {
             --primary: #121212;
@@ -24,111 +25,60 @@
             --danger: #e74c3c;
             --success: #2ecc71;
             --whatsapp: #25D366;
-            --google: #db4437;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
         
-        body { 
-            background-color: var(--bg); 
-            color: var(--text); 
-            line-height: 1.6; 
-            padding-top: 0px; 
-            transition: padding-top 0.3s ease;
-        }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.6; padding-top: 0px; transition: padding-top 0.3s ease; }
 
         .promo-banner {
-            background-color: #d9534f;
-            color: #ffffff;
-            text-align: center;
-            padding: 10px 16px;
-            font-weight: bold;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            display: none;
+            background-color: #d9534f; color: #ffffff; text-align: center; padding: 10px 16px;
+            font-weight: bold; font-size: 0.95rem; position: fixed; top: 0; left: 0; width: 100%;
+            z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: none;
         }
 
         header {
-            background-color: var(--primary);
-            color: white;
-            padding: 0.8rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0px;
-            z-index: 999;
-            flex-wrap: wrap;
-            gap: 1rem;
+            background-color: var(--primary); color: white; padding: 0.8rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0px; z-index: 999; flex-wrap: wrap; gap: 1rem;
         }
 
-        .brand-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-
-        .logo-img {
-            height: 48px;
-            width: auto;
-            display: block;
-        }
-
+        .brand-container { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-img { height: 48px; width: auto; display: block; }
         .brand-name {
-            font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
-            font-size: 1.6rem;
-            font-weight: 700;
-            letter-spacing: 3px;
-            color: var(--accent);
-            text-transform: uppercase;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            font-family: 'Cinzel', serif; font-size: 1.6rem; font-weight: 700;
+            letter-spacing: 3px; color: var(--accent); text-transform: uppercase;
         }
 
         .nav-buttons { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
-        .btn {
-            padding: 8px 16px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
+        .btn { padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; }
         .btn-accent { background: var(--accent); color: var(--primary); }
         .btn-accent:hover { background: var(--accent-hover); }
         .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
         
         .btn-google {
-            background-color: white;
-            color: #444;
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
+            background-color: white; color: #444; border: 1px solid #ddd;
+            display: flex; align-items: center; gap: 8px; font-weight: 600;
         }
         .btn-google:hover { background-color: #f1f1f1; }
 
+        .btn-email-code {
+            background-color: var(--accent); color: var(--primary); font-weight: 600;
+            display: flex; align-items: center; gap: 8px; justify-content: center; width: 100%; margin-top: 6px;
+        }
+
         .btn-whatsapp {
-            background-color: var(--whatsapp);
-            color: white;
-            font-weight: bold;
-            font-size: 1rem;
-            padding: 12px 20px;
-            border-radius: 6px;
-            width: 100%;
-            margin-top: 1rem;
+            background-color: var(--whatsapp); color: white; font-weight: bold; font-size: 1rem;
+            padding: 12px 20px; border-radius: 6px; width: 100%; margin-top: 1rem;
             transition: transform 0.2s, background-color 0.2s;
         }
-        .btn-whatsapp:hover {
-            background-color: #1eb954;
-            transform: translateY(-2px);
+        .btn-whatsapp:hover { background-color: #1eb954; transform: translateY(-2px); }
+
+        .user-profile-badge {
+            display: flex; align-items: center; gap: 8px; color: white; font-size: 0.9rem; background: #222; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--accent);
+        }
+        .user-avatar {
+            width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--accent);
         }
 
         .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
@@ -136,18 +86,16 @@
         .search-bar, .filter-select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-        .card { background: var(--card-bg); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; transition: transform 0.2s; display: flex; flex-direction: column; }
-        .card:hover { transform: translateY(-4px); }
+        .card { background: var(--card-bg); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; display: flex; flex-direction: column; }
         
         .card-img-container { position: relative; width: 100%; height: 210px; background: #eee; }
         .card-img-container img.main-img { width: 100%; height: 100%; object-fit: cover; }
         
         .thumbnails { display: flex; gap: 6px; padding: 6px 10px; background: #fafafa; border-bottom: 1px solid #eee; overflow-x: auto; }
-        .thumbnail-img { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 2px solid transparent; opacity: 0.7; transition: all 0.2s; }
+        .thumbnail-img { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 2px solid transparent; opacity: 0.7; }
         .thumbnail-img.active, .thumbnail-img:hover { border-color: var(--accent); opacity: 1; }
 
         .card-body { padding: 1rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        
         .badges { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
         .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
         .badge-stock { background: var(--success); color: white; }
@@ -162,63 +110,19 @@
         .admin-section { background: #fdfdfd; padding: 1.2rem; border: 1px solid #eee; border-radius: 6px; margin-top: 1rem; }
         .admin-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
         .admin-form input, .admin-form select, .admin-form textarea { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95rem; }
-        .admin-form textarea { grid-column: 1 / -1; min-height: 70px; resize: vertical; }
+        .admin-form textarea { grid-column: 1 / -1; min-height: 70px; }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-        }
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .modal-content { background: white; padding: 2rem; border-radius: 8px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; }
 
         .cookie-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: var(--primary);
-            color: #ffffff;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
-            z-index: 3000;
-            gap: 1rem;
-            flex-wrap: wrap;
-            display: none;
+            position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--primary); color: #ffffff;
+            padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.3); z-index: 3000; gap: 1rem; flex-wrap: wrap; display: none;
         }
-        .cookie-banner p { font-size: 0.9rem; flex: 1; min-width: 250px; }
 
-        footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            color: var(--muted);
-            font-size: 0.85rem;
-            border-top: 1px solid #ddd;
-            padding-bottom: 5rem;
-        }
+        footer { text-align: center; padding: 2rem; margin-top: 3rem; color: var(--muted); font-size: 0.85rem; border-top: 1px solid #ddd; padding-bottom: 5rem; }
         .admin-trigger { cursor: pointer; text-decoration: none; color: inherit; }
     </style>
 </head>
@@ -235,53 +139,47 @@
             <button class="btn btn-accent" onclick="openCartModal()">Panier (<span id="cartCount">0</span>)</button>
             <div id="authContainer">
                 <button class="btn btn-google" onclick="loginWithGoogle()">
-                    <span>Connexion Google</span>
+                    <span>Se connecter / Créer un compte</span>
                 </button>
             </div>
         </div>
     </header>
 
     <div class="container">
-        <!-- Dashboard Administration -->
+        <!-- Dashboard Admin -->
         <section class="admin-panel" id="adminPanel">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2>Panneau d'Administration (Accès Réussi)</h2>
-                <button class="btn" style="background: var(--danger); color: white;" onclick="closeAdmin()">Fermer / Déconnexion</button>
+                <h2>Panneau d'Administration</h2>
+                <button class="btn" style="background: var(--danger); color: white;" onclick="closeAdmin()">Fermer</button>
             </div>
             
             <div class="admin-section">
-                <h3>1. Gérer la Bannière Promotionnelle</h3>
+                <h3>1. Bannière Promotionnelle</h3>
                 <div style="display: flex; gap: 0.5rem; margin-top: 0.8rem; flex-wrap: wrap;">
-                    <input type="text" id="newBannerInput" placeholder="Ex: ✨ Offre spéciale : Livraison gratuite dès 150€ d'achat !" style="flex: 1; min-width: 250px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                    <button class="btn btn-accent" onclick="updateBanner()">Afficher / Mettre à jour</button>
-                    <button class="btn" style="background: var(--danger); color: white;" onclick="removeBanner()">Masquer l'annonce</button>
+                    <input type="text" id="newBannerInput" placeholder="Texte de l'annonce..." style="flex: 1; padding: 8px;">
+                    <button class="btn btn-accent" onclick="updateBanner()">Publier</button>
+                    <button class="btn" style="background: var(--danger); color: white;" onclick="removeBanner()">Masquer</button>
                 </div>
             </div>
 
             <div class="admin-section">
-                <h3>2. Ajouter une Nouvelle Catégorie</h3>
+                <h3>2. Ajouter une Catégorie</h3>
                 <div style="display: flex; gap: 0.5rem; margin-top: 0.8rem; flex-wrap: wrap;">
-                    <input type="text" id="newCategoryInput" placeholder="Ex: Éclairage & Luminaires..." style="flex: 1; min-width: 250px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                    <button class="btn btn-accent" onclick="addNewCategory()">Ajouter la Catégorie</button>
+                    <input type="text" id="newCategoryInput" placeholder="Nom de la catégorie..." style="flex: 1; padding: 8px;">
+                    <button class="btn btn-accent" onclick="addNewCategory()">Ajouter</button>
                 </div>
             </div>
 
             <div class="admin-section">
-                <h3 id="formHeader">3. Ajouter ou Modifier un Article</h3>
+                <h3 id="formHeader">3. Gérer un Article</h3>
                 <form class="admin-form" onsubmit="handleFormSubmit(event)">
                     <input type="hidden" id="pEditingId">
-                    
-                    <input type="text" id="pTitle" placeholder="Titre de l'article" required>
+                    <input type="text" id="pTitle" placeholder="Titre" required>
                     <select id="pCategory" required></select>
-                    <input type="number" id="pPrice" placeholder="Prix actuel (€)" step="0.01" required>
-                    <input type="number" id="pOldPrice" placeholder="Ancien Prix (€) - Optionnel (Barré)" step="0.01">
-                    
-                    <textarea id="pImgs" placeholder="URL(s) des photos : séparées par une virgule ou un saut de ligne" required></textarea>
-                    
-                    <div style="grid-column: 1 / -1; display: flex; gap: 1rem;">
-                        <button type="submit" id="btnSubmitForm" class="btn btn-accent" style="flex: 1;">Publier / Enregistrer l'Article</button>
-                        <button type="button" id="btnCancelEdit" class="btn" style="background: #ccc; display: none;" onclick="resetAdminForm()">Annuler la modification</button>
-                    </div>
+                    <input type="number" id="pPrice" placeholder="Prix (€)" step="0.01" required>
+                    <input type="number" id="pOldPrice" placeholder="Ancien Prix (€)" step="0.01">
+                    <textarea id="pImgs" placeholder="URLs des photos (séparées par des virgules)" required></textarea>
+                    <button type="submit" id="btnSubmitForm" class="btn btn-accent" style="grid-column: 1/-1;">Enregistrer</button>
                 </form>
             </div>
         </section>
@@ -309,20 +207,18 @@
                 <span id="cartTotal">0.00 €</span>
             </div>
 
-            <div style="margin-top: 1.5rem; background: #f0f0f0; padding: 1rem; border-radius: 6px;">
+            <div id="paymentSection" style="display: none; margin-top: 1.5rem; background: #f0f0f0; padding: 1rem; border-radius: 6px;">
                 <label for="paymentMethod" style="font-weight: bold; display: block; margin-bottom: 0.5rem; color: var(--primary);">
                     Mode de paiement obligatoire * :
                 </label>
-                <select id="paymentMethod" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95rem;">
-                    <option value="">-- Choisissez votre mode de paiement --</option>
+                <select id="paymentMethod" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="">-- Choisissez un mode de paiement --</option>
                     <option value="Carte Bancaire">Carte Bancaire</option>
                     <option value="Espèces">Espèces</option>
                 </select>
             </div>
 
-            <div id="checkoutArea" style="margin-top: 1rem;">
-                <!-- Rempli dynamiquement selon si l'utilisateur est connecté -->
-            </div>
+            <div id="checkoutArea" style="margin-top: 1rem;"></div>
         </div>
     </div>
 
@@ -332,11 +228,11 @@
     </div>
 
     <footer>
-        <p>&copy; LUXAPRIBA — Équipements de Luxe & Maison. Tous droits réservés. <span class="admin-trigger" onclick="requestAdminAccess()">•</span></p>
+        <p>&copy; LUXAPRIBA — Équipements de Luxe & Maison. <span class="admin-trigger" onclick="requestAdminAccess()">•</span></p>
     </footer>
 
     <script>
-       // CONFIGURATION FIREBASE (Auth Client)
+        // CONFIGURATION FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyBJ1E3q1DbBQtLG9kx_-bZu1kUQLXObC5g",
             authDomain: "luxapriba-3e8ad.firebaseapp.com",
@@ -347,23 +243,41 @@
             measurementId: "G-QZP16M48DB"
         };
         
-        // Initialisation de Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
         const auth = firebase.auth();
-
         let currentUser = null;
 
-        // Écouteur d'état de connexion
+        // Détection automatique de la validation par lien/code e-mail lors de l'ouverture de la page
+        document.addEventListener("DOMContentLoaded", () => {
+            if (auth.isSignInWithEmailLink(window.location.href)) {
+                let email = window.localStorage.getItem('emailForSignIn');
+                if (!email) {
+                    email = window.prompt('Veuillez saisir votre e-mail pour confirmer la connexion :');
+                }
+                auth.signInWithEmailLink(email, window.location.href)
+                    .then((result) => {
+                        window.localStorage.removeItem('emailForSignIn');
+                        alert("Connexion réussie via le lien de sécurité par e-mail !");
+                    })
+                    .catch((error) => {
+                        alert("Erreur lors de la validation du lien : " + error.message);
+                    });
+            }
+        });
+
+        // Gestion de l'état d'authentification
         auth.onAuthStateChanged((user) => {
             currentUser = user;
             const authContainer = document.getElementById('authContainer');
             if (user) {
+                const photoURL = user.photoURL || "https://i.ibb.co/7NNR9LWk/Chat-GPT-Image-21-sept-2026-11-57-55.png";
                 authContainer.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 10px; color: white; font-size: 0.9rem;">
-                        <span>👤 ${user.displayName || user.email}</span>
-                        <button class="btn" style="background: #e74c3c; color: white; padding: 4px 8px; font-size: 0.8rem;" onclick="logoutUser()">Déconnexion</button>
+                    <div class="user-profile-badge">
+                        <img src="${photoURL}" class="user-avatar" alt="Avatar">
+                        <span style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${user.displayName || user.email}</span>
+                        <button class="btn" style="background: #e74c3c; color: white; padding: 2px 6px; font-size: 0.75rem;" onclick="logoutUser()">Déconnexion</button>
                     </div>
                 `;
             } else {
@@ -373,14 +287,42 @@
                     </button>
                 `;
             }
-            openCartModal(); // Met à jour l'affichage du panier
+            if (document.getElementById('cartModal').style.display === 'flex') {
+                updateCartUI();
+            }
         });
 
+        // 1. Connexion/Création par Google
         function loginWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch((error) => {
-                alert("Erreur de connexion : " + error.message);
+            auth.signInWithPopup(provider).then((result) => {
+                const isNewUser = result.additionalUserInfo ? result.additionalUserInfo.isNewUser : false;
+                if (isNewUser) {
+                    alert("Compte créé avec succès ! Bienvenue chez LUXAPRIBA.");
+                }
+            }).catch((error) => {
+                alert("Erreur d'authentification : " + error.message);
             });
+        }
+
+        // 2. Envoi d'un code / lien de sécurité par e-mail
+        function loginWithEmailCode() {
+            const email = prompt("Saisissez votre adresse e-mail pour recevoir le code/lien de sécurité :");
+            if (!email) return;
+
+            const actionCodeSettings = {
+                url: window.location.href,
+                handleCodeInApp: true,
+            };
+
+            auth.sendSignInLinkToEmail(email, actionCodeSettings)
+                .then(() => {
+                    window.localStorage.setItem('emailForSignIn', email);
+                    alert("Un e-mail de confirmation sécurisé a été envoyé à : " + email + "\n\nOuvrez votre boîte e-mail et cliquez sur le lien pour valider votre accès.");
+                })
+                .catch((error) => {
+                    alert("Erreur d'envoi de l'e-mail : " + error.message);
+                });
         }
 
         function logoutUser() {
@@ -422,73 +364,34 @@
             document.getElementById('cookieBanner').style.display = 'none';
         }
 
-        const defaultCategories = [
-            "Jardin & Extérieur",
-            "Salle de Bain & Sanitaires",
-            "Robinetterie Luxe",
-            "Maison & Mobilier",
-            "Nouveautés & Exclusivités"
+        const defaultCategories = ["Jardin & Extérieur", "Salle de Bain & Sanitaires", "Robinetterie Luxe", "Maison & Mobilier"];
+        let categories = getCookie('luxapriba_categories') ? JSON.parse(getCookie('luxapriba_categories')) : defaultCategories;
+        let products = getCookie('luxapriba_products') ? JSON.parse(getCookie('luxapriba_products')) : [
+            { id: 1, title: "Gazon Artificiel Premium 40mm", category: "Jardin & Extérieur", price: 18.90, oldPrice: 24.90, imgs: ["https://images.unsplash.com/photo-1558904541-efa843a96f01?w=500"], inStock: true }
         ];
-
-        let savedCategoriesCookie = getCookie('luxapriba_categories');
-        let categories = savedCategoriesCookie ? JSON.parse(savedCategoriesCookie) : defaultCategories;
-
-        let savedBanner = getCookie('luxapriba_banner');
-        if (savedBanner) {
-            document.addEventListener('DOMContentLoaded', () => {
-                showBannerText(savedBanner);
-            });
-        }
-
-        let savedProductsCookie = getCookie('luxapriba_products');
-        let products = savedProductsCookie ? JSON.parse(savedProductsCookie) : [
-            { 
-                id: 1, 
-                title: "Gazon Artificiel Premium 40mm", 
-                category: "Jardin & Extérieur", 
-                price: 18.90, 
-                oldPrice: 24.90,
-                imgs: ["https://images.unsplash.com/photo-1558904541-efa843a96f01?w=500"], 
-                inStock: true 
-            }
-        ];
-
         let cart = [];
 
-        function saveProductsToStorage() {
-            setCookie('luxapriba_products', JSON.stringify(products), 365);
-        }
-
-        function saveCategoriesToStorage() {
-            setCookie('luxapriba_categories', JSON.stringify(categories), 365);
-        }
+        function saveProductsToStorage() { setCookie('luxapriba_products', JSON.stringify(products), 365); }
+        function saveCategoriesToStorage() { setCookie('luxapriba_categories', JSON.stringify(categories), 365); }
 
         function renderCategoriesSelects() {
-            const adminSelect = document.getElementById('pCategory');
-            const filterSelect = document.getElementById('categoryFilter');
-
-            adminSelect.innerHTML = '<option value="">-- Sélectionner une catégorie --</option>' + 
-                categories.map(c => `<option value="${c}">${c}</option>`).join('');
-
-            filterSelect.innerHTML = '<option value="ALL">Toutes les catégories</option>' + 
-                categories.map(c => `<option value="${c}">${c}</option>`).join('');
+            document.getElementById('pCategory').innerHTML = '<option value="">-- Catégorie --</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join('');
+            document.getElementById('categoryFilter').innerHTML = '<option value="ALL">Toutes les catégories</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
         function addNewCategory() {
-            const input = document.getElementById('newCategoryInput');
-            const newCat = input.value.trim();
-            if (newCat && !categories.includes(newCat)) {
-                categories.push(newCat);
+            const val = document.getElementById('newCategoryInput').value.trim();
+            if (val && !categories.includes(val)) {
+                categories.push(val);
                 saveCategoriesToStorage();
                 renderCategoriesSelects();
-                input.value = '';
-                alert(`Catégorie "${newCat}" ajoutée !`);
+                document.getElementById('newCategoryInput').value = '';
+                alert(`Catégorie "${val}" ajoutée !`);
             }
         }
 
         function requestAdminAccess() {
-            const codeInput = prompt("Accès Administrateur — Code secret :");
-            if (codeInput === SECRET_CODE) {
+            if (prompt("Code secret Admin :") === SECRET_CODE) {
                 isAdminAuthenticated = true;
                 document.getElementById('adminPanel').style.display = 'block';
                 renderProducts();
@@ -499,7 +402,6 @@
         function closeAdmin() {
             isAdminAuthenticated = false;
             document.getElementById('adminPanel').style.display = 'none';
-            resetAdminForm();
             renderProducts();
         }
 
@@ -507,15 +409,10 @@
             const search = document.getElementById('searchInput').value.toLowerCase();
             const category = document.getElementById('categoryFilter').value;
             const grid = document.getElementById('productGrid');
-
             grid.innerHTML = '';
-            const filtered = products.filter(p => {
-                const matchesCategory = category === 'ALL' || p.category === category;
-                const matchesSearch = p.title.toLowerCase().includes(search);
-                return matchesCategory && matchesSearch;
-            });
 
-            if(filtered.length === 0) {
+            const filtered = products.filter(p => (category === 'ALL' || p.category === category) && p.title.toLowerCase().includes(search));
+            if (filtered.length === 0) {
                 grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color: var(--muted); padding: 2rem;">Aucun article trouvé.</p>';
                 return;
             }
@@ -523,12 +420,9 @@
             filtered.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'card';
-                const imagesList = (p.imgs && p.imgs.length > 0) ? p.imgs : [p.img || "https://via.placeholder.com/400"];
-                const mainImg = imagesList[0];
-
-                let thumbnailsHtml = imagesList.length > 1 ? `<div class="thumbnails">` + 
-                    imagesList.map((imgUrl, idx) => `<img src="${imgUrl}" class="thumbnail-img ${idx === 0 ? 'active' : ''}" onclick="changeCardImage(this, '${p.id}', '${imgUrl}')">`).join('') + `</div>` : '';
-
+                const imgs = (p.imgs && p.imgs.length > 0) ? p.imgs : [p.img || "https://via.placeholder.com/400"];
+                
+                let thumbHtml = imgs.length > 1 ? `<div class="thumbnails">` + imgs.map((u, i) => `<img src="${u}" class="thumbnail-img ${i===0?'active':''}" onclick="changeCardImage(this, '${p.id}', '${u}')">`).join('') + `</div>` : '';
                 let hasPromo = p.oldPrice && parseFloat(p.oldPrice) > parseFloat(p.price);
 
                 card.innerHTML = `
@@ -537,13 +431,13 @@
                             <span class="badge ${p.inStock ? 'badge-stock' : 'badge-sold'}">${p.inStock ? 'Disponible' : 'Épuisé'}</span>
                             ${hasPromo ? `<span class="badge badge-promo">PROMO</span>` : ''}
                         </div>
-                        <img src="${mainImg}" id="mainImg-${p.id}" class="main-img" alt="${p.title}">
+                        <img src="${imgs[0]}" id="mainImg-${p.id}" class="main-img">
                     </div>
-                    ${thumbnailsHtml}
+                    ${thumbHtml}
                     <div class="card-body">
                         <div>
                             <small style="color:var(--muted); text-transform:uppercase; font-size:0.75rem;">${p.category}</small>
-                            <h3 style="font-size:1.1rem; margin: 4px 0; color:var(--primary);">${p.title}</h3>
+                            <h3 style="font-size:1.1rem; margin: 4px 0;">${p.title}</h3>
                             <div class="price-container">
                                 <span class="price">${parseFloat(p.price).toFixed(2)} €</span>
                                 ${hasPromo ? `<span class="old-price">${parseFloat(p.oldPrice).toFixed(2)} €</span>` : ''}
@@ -552,7 +446,6 @@
                         <div style="display:flex; gap:0.5rem; margin-top:1rem; flex-wrap:wrap;">
                             ${p.inStock ? `<button class="btn btn-accent" style="flex:1" onclick="addToCart(${p.id})">Ajouter</button>` : `<button class="btn" style="flex:1; background:#ccc;" disabled>Épuisé</button>`}
                             ${isAdminAuthenticated ? `<button class="btn btn-outline" onclick="editProduct(${p.id})">✏️</button>` : ''}
-                            ${isAdminAuthenticated ? `<button class="btn btn-outline" onclick="toggleStock(${p.id})">Stock</button>` : ''}
                             ${isAdminAuthenticated ? `<button class="btn" style="background:var(--danger); color:white;" onclick="deleteProduct(${p.id})">✕</button>` : ''}
                         </div>
                     </div>
@@ -561,82 +454,56 @@
             });
         }
 
-        function changeCardImage(thumbElem, prodId, newUrl) {
-            const card = thumbElem.closest('.card');
-            card.querySelector(`#mainImg-${prodId}`).src = newUrl;
-            card.querySelectorAll('.thumbnail-img').forEach(t => t.classList.remove('active'));
-            thumbElem.classList.add('active');
-        }
-
-        function showBannerText(text) {
-            const banner = document.getElementById('promoBanner');
-            const header = document.getElementById('mainHeader');
-            banner.innerText = text;
-            banner.style.display = 'block';
-            document.body.style.paddingTop = '40px';
-            header.style.top = '40px';
+        function changeCardImage(thumb, id, url) {
+            thumb.closest('.card').querySelector(`#mainImg-${id}`).src = url;
+            thumb.closest('.card').querySelectorAll('.thumbnail-img').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
         }
 
         function updateBanner() {
             const val = document.getElementById('newBannerInput').value.trim();
             if (val) {
-                showBannerText(val);
+                document.getElementById('promoBanner').innerText = val;
+                document.getElementById('promoBanner').style.display = 'block';
                 setCookie('luxapriba_banner', val, 365);
             }
         }
 
         function removeBanner() {
             document.getElementById('promoBanner').style.display = 'none';
-            document.body.style.paddingTop = '0px';
-            document.getElementById('mainHeader').style.top = '0px';
             setCookie('luxapriba_banner', '', -1);
         }
 
         function handleFormSubmit(e) {
             e.preventDefault();
-            const editingId = document.getElementById('pEditingId').value;
+            const id = document.getElementById('pEditingId').value;
             const title = document.getElementById('pTitle').value.trim();
             const category = document.getElementById('pCategory').value;
             const price = parseFloat(document.getElementById('pPrice').value);
             const oldPrice = document.getElementById('pOldPrice').value ? parseFloat(document.getElementById('pOldPrice').value) : null;
-            const imgs = document.getElementById('pImgs').value.split(/[\n,]+/).map(url => url.trim()).filter(u => u);
+            const imgs = document.getElementById('pImgs').value.split(/[\n,]+/).map(u => u.trim()).filter(u => u);
 
-            if (editingId) {
-                const prod = products.find(p => p.id == editingId);
-                if (prod) { prod.title = title; prod.category = category; prod.price = price; prod.oldPrice = oldPrice; prod.imgs = imgs; }
+            if (id) {
+                const p = products.find(prod => prod.id == id);
+                if (p) { p.title = title; p.category = category; p.price = price; p.oldPrice = oldPrice; p.imgs = imgs; }
             } else {
                 products.unshift({ id: Date.now(), title, category, price, oldPrice, imgs, inStock: true });
             }
             saveProductsToStorage();
             renderProducts();
-            resetAdminForm();
+            e.target.reset();
         }
 
         function editProduct(id) {
-            const prod = products.find(p => p.id == id);
-            if (!prod) return;
-            document.getElementById('pEditingId').value = prod.id;
-            document.getElementById('pTitle').value = prod.title;
-            document.getElementById('pCategory').value = prod.category;
-            document.getElementById('pPrice').value = prod.price;
-            document.getElementById('pOldPrice').value = prod.oldPrice || '';
-            document.getElementById('pImgs').value = (prod.imgs || []).join(', ');
+            const p = products.find(prod => prod.id == id);
+            if (!p) return;
+            document.getElementById('pEditingId').value = p.id;
+            document.getElementById('pTitle').value = p.title;
+            document.getElementById('pCategory').value = p.category;
+            document.getElementById('pPrice').value = p.price;
+            document.getElementById('pOldPrice').value = p.oldPrice || '';
+            document.getElementById('pImgs').value = p.imgs.join(', ');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function resetAdminForm() {
-            document.getElementById('pEditingId').value = '';
-            document.getElementById('pTitle').value = '';
-            document.getElementById('pCategory').value = '';
-            document.getElementById('pPrice').value = '';
-            document.getElementById('pOldPrice').value = '';
-            document.getElementById('pImgs').value = '';
-        }
-
-        function toggleStock(id) {
-            const prod = products.find(p => p.id === id);
-            if (prod) { prod.inStock = !prod.inStock; saveProductsToStorage(); }
-            renderProducts();
         }
 
         function deleteProduct(id) {
@@ -653,13 +520,20 @@
         }
 
         function openCartModal() {
+            updateCartUI();
+            document.getElementById('cartModal').style.display = 'flex';
+        }
+
+        function updateCartUI() {
             const list = document.getElementById('cartItemsList');
             list.innerHTML = '';
             const checkoutArea = document.getElementById('checkoutArea');
+            const paymentSection = document.getElementById('paymentSection');
 
             if (cart.length === 0) {
                 list.innerHTML = '<p style="color:var(--muted); text-align:center;">Votre panier est vide.</p>';
                 document.getElementById('cartTotal').innerText = '0.00 €';
+                paymentSection.style.display = 'none';
                 checkoutArea.innerHTML = '';
             } else {
                 const counts = {};
@@ -669,46 +543,46 @@
                 Object.keys(counts).forEach(id => {
                     const prod = products.find(p => p.id == id);
                     if (prod) {
-                        const subtotal = prod.price * counts[id];
-                        total += subtotal;
-                        list.innerHTML += `<div class="cart-item"><div><strong>${prod.title}</strong><br><small>${prod.price.toFixed(2)} € x ${counts[id]}</small></div><div>${subtotal.toFixed(2)} €</div></div>`;
+                        const sub = prod.price * counts[id];
+                        total += sub;
+                        list.innerHTML += `<div class="cart-item"><div><strong>${prod.title}</strong><br><small>${prod.price.toFixed(2)} € x ${counts[id]}</small></div><div>${sub.toFixed(2)} €</div></div>`;
                     }
                 });
 
                 document.getElementById('cartTotal').innerText = total.toFixed(2) + ' €';
+                paymentSection.style.display = 'block';
 
-                // Gestion de l'affichage du bouton de commande selon la connexion
                 if (currentUser) {
+                    const avatar = currentUser.photoURL || "https://i.ibb.co/7NNR9LWk/Chat-GPT-Image-21-sept-2026-11-57-55.png";
                     checkoutArea.innerHTML = `
-                        <p style="font-size: 0.85rem; color: var(--success); margin-bottom: 0.5rem;">✅ Connecté en tant que : <strong>${currentUser.email}</strong></p>
+                        <div style="display: flex; align-items: center; gap: 10px; background: #e8f5e9; padding: 10px; border-radius: 6px; margin-bottom: 0.5rem;">
+                            <img src="${avatar}" style="width: 30px; height: 30px; border-radius: 50%;">
+                            <span style="font-size: 0.85rem; color: #2e7d32;">Connecté : <strong>${currentUser.email}</strong></span>
+                        </div>
                         <button class="btn btn-whatsapp" onclick="checkoutWhatsApp()">Commander via WhatsApp 💬</button>
                     `;
                 } else {
                     checkoutArea.innerHTML = `
                         <div style="background: #fff3cd; padding: 10px; border-radius: 6px; font-size: 0.9rem; text-align: center; margin-bottom: 0.5rem;">
-                            ⚠️ Veuillez vous connecter avec Google pour finaliser votre commande.
+                            ⚠️ Connexion ou création de compte requise pour commander.
                         </div>
                         <button class="btn btn-google" style="width: 100%; justify-content: center;" onclick="loginWithGoogle()">
-                            <span>Se connecter pour commander</span>
+                            <span>Se connecter avec Google</span>
+                        </button>
+                        <button class="btn btn-email-code" onclick="loginWithEmailCode()">
+                            ✉️ Recevoir un code/lien par e-mail
                         </button>
                     `;
                 }
             }
-            document.getElementById('cartModal').style.display = 'flex';
         }
 
-        function closeCartModal() {
-            document.getElementById('cartModal').style.display = 'none';
-        }
+        function closeCartModal() { document.getElementById('cartModal').style.display = 'none'; }
 
         function checkoutWhatsApp() {
             const phoneNumber = "262639652738";
             const paymentMethod = document.getElementById('paymentMethod').value;
-
-            if (!paymentMethod) {
-                alert("Veuillez choisir un mode de paiement.");
-                return;
-            }
+            if (!paymentMethod) { alert("Veuillez choisir un mode de paiement."); return; }
 
             const counts = {};
             cart.forEach(id => { counts[id] = (counts[id] || 0) + 1; });
@@ -718,15 +592,14 @@
             Object.keys(counts).forEach(id => {
                 const prod = products.find(p => p.id == id);
                 if (prod) {
-                    const subtotal = prod.price * counts[id];
-                    total += subtotal;
-                    orderDetails += `• ${prod.title} (x${counts[id]}) : ${subtotal.toFixed(2)} €\n`;
+                    const sub = prod.price * counts[id];
+                    total += sub;
+                    orderDetails += `• ${prod.title} (x${counts[id]}) : ${sub.toFixed(2)} €\n`;
                 }
             });
 
-            const clientEmail = currentUser ? currentUser.email : "Non connecté";
+            const clientEmail = currentUser ? currentUser.email : "Anonyme";
             const message = `Bonjour LUXAPRIBA, je souhaite passer commande :\n\n📧 Client : ${clientEmail}\n\n${orderDetails}\n*Total : ${total.toFixed(2)} €*\n💳 *Paiement : ${paymentMethod}*`;
-
             window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
