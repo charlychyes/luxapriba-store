@@ -9,9 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDK (Compat) -->
+    <!-- Firebase SDKs (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
     <style>
         :root {
@@ -247,9 +248,10 @@
             firebase.initializeApp(firebaseConfig);
         }
         const auth = firebase.auth();
+        const db = firebase.firestore();
         let currentUser = null;
 
-        // Détection automatique de la validation par lien/code e-mail lors de l'ouverture de la page
+        // Détection de la connexion via lien e-mail
         document.addEventListener("DOMContentLoaded", () => {
             if (auth.isSignInWithEmailLink(window.location.href)) {
                 let email = window.localStorage.getItem('emailForSignIn');
@@ -257,7 +259,7 @@
                     email = window.prompt('Veuillez saisir votre e-mail pour confirmer la connexion :');
                 }
                 auth.signInWithEmailLink(email, window.location.href)
-                    .then((result) => {
+                    .then(() => {
                         window.localStorage.removeItem('emailForSignIn');
                         alert("Connexion réussie via le lien de sécurité par e-mail !");
                     })
@@ -283,7 +285,7 @@
             } else {
                 authContainer.innerHTML = `
                     <button class="btn btn-google" onclick="loginWithGoogle()">
-                        <span>Connexion Google</span>
+                        <span>Se connecter / Créer un compte</span>
                     </button>
                 `;
             }
@@ -292,7 +294,6 @@
             }
         });
 
-        // 1. Connexion/Création par Google
         function loginWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider).then((result) => {
@@ -305,7 +306,6 @@
             });
         }
 
-        // 2. Envoi d'un code / lien de sécurité par e-mail
         function loginWithEmailCode() {
             const email = prompt("Saisissez votre adresse e-mail pour recevoir le code/lien de sécurité :");
             if (!email) return;
@@ -364,15 +364,30 @@
             document.getElementById('cookieBanner').style.display = 'none';
         }
 
+        // --- SYNCHRONISATION FIRESTORE ---
         const defaultCategories = ["Jardin & Extérieur", "Salle de Bain & Sanitaires", "Robinetterie Luxe", "Maison & Mobilier"];
-        let categories = getCookie('luxapriba_categories') ? JSON.parse(getCookie('luxapriba_categories')) : defaultCategories;
-        let products = getCookie('luxapriba_products') ? JSON.parse(getCookie('luxapriba_products')) : [
-            { id: 1, title: "Gazon Artificiel Premium 40mm", category: "Jardin & Extérieur", price: 18.90, oldPrice: 24.90, imgs: ["https://images.unsplash.com/photo-1558904541-efa843a96f01?w=500"], inStock: true }
-        ];
+        let categories = [...defaultCategories];
+        let products = [];
         let cart = [];
 
-        function saveProductsToStorage() { setCookie('luxapriba_products', JSON.stringify(products), 365); }
-        function saveCategoriesToStorage() { setCookie('luxapriba_categories', JSON.stringify(categories), 365); }
+        // Écoute en temps réel des catégories depuis Firestore
+        db.collection("categories").onSnapshot((snapshot) => {
+            if (!snapshot.empty) {
+                categories = snapshot.docs.map(doc => doc.data().name);
+            } else {
+                categories = [...defaultCategories];
+            }
+            renderCategoriesSelects();
+        });
+
+        // Écoute en temps réel des produits depuis Firestore
+        db.collection("products").onSnapshot((snapshot) => {
+            products = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            renderProducts();
+        });
 
         function renderCategoriesSelects() {
             document.getElementById('pCategory').innerHTML = '<option value="">-- Catégorie --</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join('');
@@ -382,11 +397,10 @@
         function addNewCategory() {
             const val = document.getElementById('newCategoryInput').value.trim();
             if (val && !categories.includes(val)) {
-                categories.push(val);
-                saveCategoriesToStorage();
-                renderCategoriesSelects();
-                document.getElementById('newCategoryInput').value = '';
-                alert(`Catégorie "${val}" ajoutée !`);
+                db.collection("categories").add({ name: val }).then(() => {
+                    document.getElementById('newCategoryInput').value = '';
+                    alert(`Catégorie "${val}" enregistrée dans la base de données !`);
+                }).catch(err => alert("Erreur : " + err.message));
             }
         }
 
@@ -444,9 +458,9 @@
                             </div>
                         </div>
                         <div style="display:flex; gap:0.5rem; margin-top:1rem; flex-wrap:wrap;">
-                            ${p.inStock ? `<button class="btn btn-accent" style="flex:1" onclick="addToCart(${p.id})">Ajouter</button>` : `<button class="btn" style="flex:1; background:#ccc;" disabled>Épuisé</button>`}
-                            ${isAdminAuthenticated ? `<button class="btn btn-outline" onclick="editProduct(${p.id})">✏️</button>` : ''}
-                            ${isAdminAuthenticated ? `<button class="btn" style="background:var(--danger); color:white;" onclick="deleteProduct(${p.id})">✕</button>` : ''}
+                            ${p.inStock ? `<button class="btn btn-accent" style="flex:1" onclick="addToCart('${p.id}')">Ajouter</button>` : `<button class="btn" style="flex:1; background:#ccc;" disabled>Épuisé</button>`}
+                            ${isAdminAuthenticated ? `<button class="btn btn-outline" onclick="editProduct('${p.id}')">✏️</button>` : ''}
+                            ${isAdminAuthenticated ? `<button class="btn" style="background:var(--danger); color:white;" onclick="deleteProduct('${p.id}')">✕</button>` : ''}
                         </div>
                     </div>
                 `;
@@ -483,15 +497,20 @@
             const oldPrice = document.getElementById('pOldPrice').value ? parseFloat(document.getElementById('pOldPrice').value) : null;
             const imgs = document.getElementById('pImgs').value.split(/[\n,]+/).map(u => u.trim()).filter(u => u);
 
+            const productData = { title, category, price, oldPrice, imgs, inStock: true, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+
             if (id) {
-                const p = products.find(prod => prod.id == id);
-                if (p) { p.title = title; p.category = category; p.price = price; p.oldPrice = oldPrice; p.imgs = imgs; }
+                db.collection("products").doc(id).update(productData).then(() => {
+                    alert("Article mis à jour dans Firebase !");
+                    e.target.reset();
+                    document.getElementById('pEditingId').value = '';
+                }).catch(err => alert("Erreur : " + err.message));
             } else {
-                products.unshift({ id: Date.now(), title, category, price, oldPrice, imgs, inStock: true });
+                db.collection("products").add(productData).then(() => {
+                    alert("Nouvel article enregistré de façon permanente dans Firebase !");
+                    e.target.reset();
+                }).catch(err => alert("Erreur : " + err.message));
             }
-            saveProductsToStorage();
-            renderProducts();
-            e.target.reset();
         }
 
         function editProduct(id) {
@@ -502,15 +521,15 @@
             document.getElementById('pCategory').value = p.category;
             document.getElementById('pPrice').value = p.price;
             document.getElementById('pOldPrice').value = p.oldPrice || '';
-            document.getElementById('pImgs').value = p.imgs.join(', ');
+            document.getElementById('pImgs').value = p.imgs ? p.imgs.join(', ') : '';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function deleteProduct(id) {
-            if (confirm("Supprimer cet article ?")) {
-                products = products.filter(p => p.id !== id);
-                saveProductsToStorage();
-                renderProducts();
+            if (confirm("Supprimer définitivement cet article de la base de données ?")) {
+                db.collection("products").doc(id).delete().then(() => {
+                    alert("Article supprimé de Firebase !");
+                }).catch(err => alert("Erreur : " + err.message));
             }
         }
 
@@ -604,7 +623,6 @@
         }
 
         renderCategoriesSelects();
-        renderProducts();
     </script>
 </body>
 </html>
